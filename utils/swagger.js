@@ -55,10 +55,13 @@ const __dirname = path.dirname(__filename);
  *               description: Short biography of the user
  *             role: 
  *               type: integer
- *               description: Role of the user (e.g., 0 for user, 1 for admin, 2 for staff)
+ *               description: Role of the user (e.g., 0 for user, 1 for admin, 2 for staff, etc)
  *             avatar:
  *               type: string
  *               description: URL or base64 format to the user's avatar or image
+ *             status:
+ *               type: string
+ *               description: Change user status (active or inactive)
  *         socialLinks:
  *           type: object
  *           properties:
@@ -80,20 +83,6 @@ const __dirname = path.dirname(__filename);
  *             website:
  *               type: string
  *               description: Personal website of the user
- *         account_info:
- *           type: object
- *           properties:
- *             total_borrowed:
- *               type: integer
- *               description: Total number of items borrowed by the user
- *             total_project:
- *               type: integer
- *               description: Total number of projects associated with the user
- *         borrowed_items:
- *           type: array
- *           items:
- *             type: object
- *             description: List of items borrowed by the user
  *         joinedAt:
  *           type: string
  *           format: date-time
@@ -116,6 +105,7 @@ const __dirname = path.dirname(__filename);
  *           password: "securePassword"
  *           avatar: "https://api.dicebear.com/9.x/adventurer-neutral/svg?seed=Toby"
  *           program: "Computer Science"
+ *           status: "active"
  *         social_links:
  *           youtube: https://youtube.com/johndoe
  *           instagram: https://instagram.com/johndoe
@@ -123,13 +113,9 @@ const __dirname = path.dirname(__filename);
  *           twitter: https://twitter.com/johndoe
  *           github: https://github.com/johndoe
  *           website: https://johndoe.com
- *         account_info:
- *           total_borrowed: 3
- *           total_project: 6
- *         borrowed_items: []
  *         joinedAt: "2024-08-07T07:20:10.250Z"
  *         updatedAt: "2024-09-10T16:27:44.578Z"
- *
+ *  
  */
 
 const swaggerSpec = swaggerJsDoc({
