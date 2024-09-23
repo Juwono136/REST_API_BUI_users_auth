@@ -166,13 +166,6 @@ router.post("/forgot", forgotPassword)
  *     tags:
  *       - Users
  *     summary: Reset user password
- *     parameters:
- *       - name: Authorization
- *         in: header
- *         required: true
- *         description: Bearer token for authentication
- *         schema:
- *           type: string
  *     requestBody:
  *       required: true
  *       content:
@@ -203,17 +196,10 @@ router.post("/reset", auth, resetPassword)
  *     tags:
  *       - Users
  *     summary: Get user information
- *     parameters:
- *       - name: Authorization
- *         in: header
- *         required: true
- *         description: Bearer token for authentication
- *         schema:
- *           type: string
  *     responses:
  *       '200':
  *         description: User information retrieved
- *       '401':
+ *       '403':
  *         description: Unauthorized
  *       '500':
  *         description: Internal server error
@@ -227,13 +213,6 @@ router.get("/user_infor", auth, getUserInfor)
  *     tags:
  *       - Users
  *     summary: Get all users information
- *     parameters:
- *       - name: Authorization
- *         in: header
- *         required: true
- *         description: Bearer token for authentication
- *         schema:
- *           type: string
  *     responses:
  *       '200':
  *         description: All users information retrieved
@@ -268,13 +247,6 @@ router.get("/logout", logout)
  *     tags:
  *       - Users
  *     summary: Update user information
- *     parameters:
- *       - name: Authorization
- *         in: header
- *         required: true
- *         description: Bearer token for authentication
- *         schema:
- *           type: string
  *     requestBody:
  *       required: true
  *       content:
@@ -336,12 +308,6 @@ router.patch("/update_user", auth, updateUser)
  *       - Users
  *     summary: Update user role
  *     parameters:
- *       - name: Authorization
- *         in: header
- *         required: true
- *         description: Bearer token for authentication
- *         schema:
- *           type: string
  *       - name: id
  *         in: path
  *         required: true
@@ -375,12 +341,6 @@ router.patch("/update_role/:id", auth, authAdmin, updateUserRole)
  *       - Users
  *     summary: Change the status of a user (e.g., active, inactive)
  *     parameters:
- *       - name: Authorization
- *         in: header
- *         required: true
- *         description: Bearer token for authentication
- *         schema:
- *           type: string
  *       - name: id
  *         in: path
  *         required: true
@@ -417,12 +377,6 @@ router.patch("/update_user_status/:id", auth, authAdmin, updateUserStatus)
  *       - Users
  *     summary: Delete a user
  *     parameters:
- *       - name: Authorization
- *         in: header
- *         required: true
- *         description: Bearer token for authentication
- *         schema:
- *           type: string
  *       - name: id
  *         in: path
  *         required: true

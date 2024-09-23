@@ -9,6 +9,11 @@ const __dirname = path.dirname(__filename);
 /**
  * @swagger
  * components:
+ *   securitySchemes:
+ *     bearerAuth:
+ *       type: apiKey
+ *       in: header
+ *       name: Authorization
  *   schemas:
  *     User:
  *       type: object
@@ -132,6 +137,11 @@ const swaggerSpec = swaggerJsDoc({
                 description: 'Local server',
             },
         ],
+        security: [
+            {
+                bearerAuth: []
+            }
+        ]
     },
     apis: [
         path.join(__dirname, '..', 'routes', '*.js'),
