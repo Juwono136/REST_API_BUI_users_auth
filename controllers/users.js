@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import User from '../models/user.js';
-import { userSendMail } from './UserSendMail.js';
+import { userSendMail } from './userSendMail.js';
 
 const { CLIENT_URL } = process.env
 

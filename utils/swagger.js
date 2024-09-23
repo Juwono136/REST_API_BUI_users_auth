@@ -136,6 +136,10 @@ const swaggerSpec = swaggerJsDoc({
                 url: 'http://localhost:5000/api/user',
                 description: 'Local server',
             },
+            {
+                url: 'https://4225-103-94-10-238.ngrok-free.app',
+                description: 'internet server'
+            }
         ],
         security: [
             {
