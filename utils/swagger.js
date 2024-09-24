@@ -137,8 +137,8 @@ const swaggerSpec = swaggerJsDoc({
                 description: 'Local server',
             },
             {
-                url: 'https://4225-103-94-10-238.ngrok-free.app',
-                description: 'internet server'
+                url: process.env.NGROK_SERVER,
+                description: 'Internet server'
             }
         ],
         security: [
