@@ -1,5 +1,5 @@
 import express from 'express';
-import { activateEmail, deleteUser, forgotPassword, getAccessToken, getAllUsersInfor, getUserInfor, logout, resetPassword, signIn, signUp, updateUser, updateUserRole, updateUserStatus } from '../controllers/users.js';
+import { activateEmail, deleteUser, forgotPassword, getAccessToken, getAllUsersInfor, getUserInfor, logout, resetPassword, selectRole, signIn, signUp, updateUser, updateUserRole, updateUserStatus } from '../controllers/users.js';
 import { auth } from '../middleware/auth.js';
 import { authAdmin } from '../middleware/authAdmin.js';
 
@@ -114,6 +114,36 @@ router.post("/activation", activateEmail)
  *         description: Internal server error
  */
 router.post("/signin", signIn)
+
+/**
+ * @openapi
+ * /select-role:
+ *   post:
+ *     tags:
+ *       - Users
+ *     summary: Select user role after login (if user has more than 1 roles)
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               userId:
+ *                 type: string
+ *               selectedRole:
+ *                 type: integer
+ *     responses:
+ *       '200':
+ *         description: Role selected successful
+ *       '404':
+ *         description: Not Found
+ *       '400':
+ *         description: Bad request
+ *       '500':
+ *         description: Internal server error
+ */
+router.post("/select-role", selectRole)
 
 /**
  * @openapi
@@ -322,7 +352,9 @@ router.patch("/update_user", auth, updateUser)
  *             type: object
  *             properties:
  *               role:
- *                 type: integer
+ *                 type: array
+ *                 items: 
+ *                   type: integer
  *     responses:
  *       '200':
  *         description: User role updated

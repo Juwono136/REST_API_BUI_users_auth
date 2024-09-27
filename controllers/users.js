@@ -27,11 +27,15 @@ export const signUp = async (req, res) => {
             ]
         });
 
+        if (user && user.personal_info.role.includes(0)) {
+            return res.status(400).json({ message: "This account already exists." });
+        }
+
         if (user && user.personal_info.status === 'inactive') {
             return res.status(403).json({ message: "Your account is inactive. Please contact admin to reactivate." });
         }
 
-        if (user) return res.status(400).json({ message: "This account already exists" })
+        // if (user) return res.status(400).json({ message: "This account already exists" })
 
         if (!validatePassword(password)) return res.status(400).json({ message: "Password should be 6 to 20 characters long with a numeric, 1 lowercase and 1 uppercase letters" })
 
@@ -43,7 +47,7 @@ export const signUp = async (req, res) => {
                 name,
                 email,
                 program,
-                password: passwordHash
+                password: passwordHash,
             }
         }
 
@@ -68,15 +72,28 @@ export const activateEmail = async (req, res) => {
 
         const { binusian_id, name, email, program, password } = user.personal_info
 
-        const check = await User.findOne({ "personal_info.email": email })
-        if (check) return res.status(400).json({ message: "This email already exists" })
+        const existingUser = await User.findOne({ "personal_info.email": email });
+        // if (check) return res.status(400).json({ message: "This email already exists" })
+
+        if (existingUser && existingUser.personal_info.role.includes(0)) {
+            return res.status(400).json({ message: "This email already exists." });
+        }
+
+        if (existingUser) {
+            if (!existingUser.personal_info.role.includes(0)) {
+                existingUser.personal_info.role.push(0);
+                await existingUser.save();
+            }
+            return res.json({ message: "Account has been activated. Please login now!" });
+        }
 
         const newUser = new User({
             'personal_info.binusian_id': binusian_id,
             'personal_info.name': name,
             'personal_info.email': email,
             'personal_info.program': program,
-            'personal_info.password': password
+            'personal_info.password': password,
+            'personal_info.role': [0]
         })
 
         await newUser.save()
@@ -104,6 +121,8 @@ export const signIn = async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.personal_info.password)
         if (!isMatch) return res.status(400).json({ message: "Invalid Credentials" })
 
+        const roles = user.personal_info.role;
+
         const refresh_token = createRefreshToken({ id: user._id })
 
         const expiry = 24 * 60 * 60 * 1000 // 1 day
@@ -115,11 +134,50 @@ export const signIn = async (req, res) => {
             expires: new Date(Date.now() + expiry)
         })
 
+        // if user only has 1 role
+        if (roles.length === 1) {
+            res.json({
+                message: `🖖Welcome, ${user.personal_info.name}`,
+                selectedRole: roles[0],
+                role: roles
+            })
+        } else {
+            // if user has more than 1 roles
+            res.json({
+                message: `🖖Welcome, ${user.personal_info.name}`,
+                roleSelectionRequired: true,
+                role: roles,
+                id: user._id
+            })
+        }
+
+        // res.json({
+        //     message: `🖖Welcome, ${user.personal_info.name}`,
+        //     role: user.personal_info.role
+        //     // isLoggedOut: false
+        // })
+    } catch (error) {
+        return res.status(500).json({ message: error.message })
+    }
+}
+
+export const selectRole = async (req, res) => {
+    try {
+        const { userId, selectedRole } = req.body
+
+        const user = await User.findById(userId)
+
+        if (!user) return res.status(404).json({ message: "User not found." })
+
+        if (!user.personal_info.role.includes(selectedRole)) {
+            return res.status(400).json({ message: "Invalid role selection" })
+        }
+
         res.json({
             message: `🖖Welcome, ${user.personal_info.name}`,
-            role: user.personal_info.role
-            // isLoggedOut: false
+            role: selectedRole
         })
+
     } catch (error) {
         return res.status(500).json({ message: error.message })
     }
@@ -314,10 +372,10 @@ export const updateUser = async (req, res) => {
 export const updateUserRole = async (req, res) => {
     try {
         const { role } = req.body
-        const userRole = [0, 1, 2]
+        const userRole = [0, 1, 2] // 0 = user, 1 = admin, 2 = staff
 
         // Validate role
-        if (!userRole.includes(role)) {
+        if (!Array.isArray(role) || role.some(r => !userRole.includes(r))) {
             return res.status(400).json({ message: "Invalid user role" });
         }
 

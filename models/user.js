@@ -8,7 +8,6 @@ const userSchema = mongoose.Schema({
         binusian_id: {
             type: String,
             required: true,
-            unique: true
         },
         name: {
             type: String,
@@ -19,7 +18,6 @@ const userSchema = mongoose.Schema({
             type: String,
             required: true,
             trim: true,
-            unique: true
         },
         password: {
             type: String,
@@ -43,9 +41,9 @@ const userSchema = mongoose.Schema({
             default: ""
         },
         role: {
-            type: Number,
+            type: [Number],
             required: true,
-            default: 0 // 0 = user, 1 = admin, 2 = staff
+            default: [0] // 0 = general user, 1 = admin, 2 = staff, ...
         },
         avatar: {
             type: String,
