@@ -59,7 +59,9 @@ const __dirname = path.dirname(__filename);
  *               type: string
  *               description: Short biography of the user
  *             role: 
- *               type: integer
+ *               type: array
+ *               items:
+ *                  type: integer
  *               description: Role of the user (e.g., 0 for user, 1 for admin, 2 for staff, etc)
  *             avatar:
  *               type: string
@@ -103,7 +105,7 @@ const __dirname = path.dirname(__filename);
  *           address: "Senayan Campus"
  *           phone: "089123456789"
  *           bio: "Test my bio updated with hello world. This is awesome bio!"
- *           role: 0
+ *           role: [0]
  *           binusian_id: "BN123456"
  *           name: "john doe"
  *           email: "johndoe@gmail.com"

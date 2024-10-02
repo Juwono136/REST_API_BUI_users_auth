@@ -139,28 +139,23 @@ export const signIn = async (req, res) => {
             res.json({
                 message: `🖖Welcome, ${user.personal_info.name}`,
                 selectedRole: roles[0],
-                role: roles
+                userRoles: roles
             })
         } else {
             // if user has more than 1 roles
             res.json({
-                message: `🖖Welcome, ${user.personal_info.name}`,
+                message: "Please select your role.",
                 roleSelectionRequired: true,
                 role: roles,
                 id: user._id
             })
         }
-
-        // res.json({
-        //     message: `🖖Welcome, ${user.personal_info.name}`,
-        //     role: user.personal_info.role
-        //     // isLoggedOut: false
-        // })
     } catch (error) {
         return res.status(500).json({ message: error.message })
     }
 }
 
+// select role
 export const selectRole = async (req, res) => {
     try {
         const { userId, selectedRole } = req.body
@@ -175,7 +170,8 @@ export const selectRole = async (req, res) => {
 
         res.json({
             message: `🖖Welcome, ${user.personal_info.name}`,
-            role: selectedRole
+            selectedRole,
+            userRoles: user.personal_info.role
         })
 
     } catch (error) {
