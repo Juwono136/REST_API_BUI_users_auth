@@ -367,27 +367,56 @@ export const updateUser = async (req, res) => {
 // update user role
 export const updateUserRole = async (req, res) => {
     try {
-        const { role } = req.body
-        const userRole = [0, 1, 2] // 0 = user, 1 = admin, 2 = staff
+        const { role } = req.body; // role is expected as an array
+        const validRoles = [0, 1, 2]; // 0 = user, 1 = admin, 2 = staff
 
-        // Validate role
-        if (!Array.isArray(role) || role.some(r => !userRole.includes(r))) {
+        // Validate user role
+        if (!Array.isArray(role) || role.some(r => !validRoles.includes(r))) {
             return res.status(400).json({ message: "Invalid user role" });
         }
 
-        const updatedUser = await User.findOneAndUpdate({ _id: req.params.id }, {
-            "personal_info.role": role
-        }, { new: true })
+        if (role.length > 3) {
+            return res.status(400).json({ message: "User can only have a maximum of 3 roles" });
+        }
 
-        if (!updatedUser) {
+        // Find the user by ID
+        const user = await User.findById(req.params.id);
+        if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
 
-        res.json({ message: "Update user role success" })
+        // Get current roles from the user
+        let currentRoles = user.personal_info.role;
+
+        // Combine current and new roles, then remove duplicates
+        let updatedRoles = [...role];
+
+        // Remove duplicates (e.g. [1, 0, 0] becomes [1, 0])
+        updatedRoles = Array.from(new Set(updatedRoles));
+
+        // Handle if the updated role contains duplicates like [0,0] or [1,1,1]
+        if (updatedRoles.length === 1 && role.every(r => r === updatedRoles[0])) {
+            // If all roles in request are the same, return a single element (e.g. [0,0,0] becomes [0])
+            updatedRoles = [updatedRoles[0]];
+        }
+
+        // If the updated roles have fewer items than current roles, replace only the provided indexes
+        for (let i = 0; i < role.length; i++) {
+            currentRoles[i] = role[i];
+        }
+
+        // Remove duplicates in the final currentRoles if necessary
+        currentRoles = Array.from(new Set(currentRoles));
+
+        // Save back to database
+        user.personal_info.role = currentRoles;
+        const updatedUser = await user.save();
+
+        res.json({ message: "Update user role success", role: updatedUser.personal_info.role });
     } catch (error) {
-        return res.status(500).json({ message: error.message })
+        return res.status(500).json({ message: error.message });
     }
-}
+};
 
 // update user status
 export const updateUserStatus = async (req, res) => {
