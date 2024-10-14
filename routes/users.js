@@ -1,5 +1,5 @@
 import express from 'express';
-import { activateEmail, deleteUser, forgotPassword, getAccessToken, getAllUsersInfor, getUserInfor, logout, resetPassword, selectRole, signIn, signUp, updateUser, updateUserRole, updateUserStatus } from '../controllers/users.js';
+import { activateEmail, forgotPassword, getAccessToken, getAllUsersInfor, getUserInfor, logout, resetPassword, selectRole, signIn, signUp, updateUser, updateUserRole, updateUserStatus } from '../controllers/users.js';
 import { auth } from '../middleware/auth.js';
 import { authAdmin } from '../middleware/authAdmin.js';
 
@@ -401,28 +401,28 @@ router.patch("/update_role/:id", auth, authAdmin, updateUserRole)
  */
 router.patch("/update_user_status/:id", auth, authAdmin, updateUserStatus)
 
-/**
- * @openapi
- * /delete/{id}:
- *   delete:
- *     tags:
- *       - Users
- *     summary: Delete a user
- *     parameters:
- *       - name: id
- *         in: path
- *         required: true
- *         description: User ID
- *         schema:
- *           type: string
- *     responses:
- *       '200':
- *         description: User deleted
- *       '400':
- *         description: Bad request
- *       '500':
- *         description: Internal server error
- */
-router.delete("/delete/:id", auth, authAdmin, deleteUser)
+// /**
+//  * @openapi
+//  * /delete/{id}:
+//  *   delete:
+//  *     tags:
+//  *       - Users
+//  *     summary: Delete a user
+//  *     parameters:
+//  *       - name: id
+//  *         in: path
+//  *         required: true
+//  *         description: User ID
+//  *         schema:
+//  *           type: string
+//  *     responses:
+//  *       '200':
+//  *         description: User deleted
+//  *       '400':
+//  *         description: Bad request
+//  *       '500':
+//  *         description: Internal server error
+//  */
+// router.delete("/delete/:id", auth, authAdmin, deleteUser)
 
 export default router

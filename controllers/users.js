@@ -443,19 +443,19 @@ export const updateUserStatus = async (req, res) => {
 }
 
 // delete user permanently
-export const deleteUser = async (req, res) => {
-    try {
-        const user = await User.findByIdAndDelete(req.params.id)
+// export const deleteUser = async (req, res) => {
+//     try {
+//         const user = await User.findByIdAndDelete(req.params.id)
 
-        if (!user) {
-            return res.status(404).json({ message: "User not found" })
-        }
+//         if (!user) {
+//             return res.status(404).json({ message: "User not found" })
+//         }
 
-        res.json({ message: "Delete user success" })
-    } catch (error) {
-        return res.status(500).json({ message: error.message })
-    }
-}
+//         res.json({ message: "Delete user success" })
+//     } catch (error) {
+//         return res.status(500).json({ message: error.message })
+//     }
+// }
 
 // logout
 export const logout = async (req, res) => {
