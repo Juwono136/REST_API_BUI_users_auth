@@ -1,7 +1,8 @@
 import express from 'express';
-import { activateEmail, forgotPassword, getAccessToken, getAllUsersInfor, getUserInfor, logout, resetPassword, selectRole, signIn, signUp, updateUser, updateUserRole, updateUserStatus } from '../controllers/users.js';
+import { activateEmail, forgotPassword, getAccessToken, getAllUsersInfor, getUserById, getUserInfor, logout, resetPassword, selectRole, signIn, signUp, updateUser, updateUserRole, updateUserStatus } from '../controllers/users.js';
 import { auth } from '../middleware/auth.js';
 import { authAdmin } from '../middleware/authAdmin.js';
+// import { authAdminOrStaff } from '../middleware/authAdminOrStaff.js';
 
 const router = express.Router()
 
@@ -235,6 +236,30 @@ router.post("/reset", auth, resetPassword)
  *         description: Internal server error
  */
 router.get("/user_infor", auth, getUserInfor)
+
+/**
+ * @openapi
+ * /users/{id}:
+ *   get:
+ *     tags:
+ *       - Users
+ *     summary: Get user information by user ID
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         description: User ID
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '200':
+ *         description: User information retrieved By ID
+ *       '404':
+ *         description: User Not Found
+ *       '500':
+ *         description: Internal server error
+ */
+router.get("/users/:id", auth, authAdmin, getUserById)
 
 /**
  * @openapi

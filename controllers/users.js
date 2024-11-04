@@ -250,51 +250,86 @@ export const getUserInfor = async (req, res) => {
     }
 }
 
-// get all user infor
+// get user infor by Id
+export const getUserById = async (req, res) => {
+    try {
+
+        const user = await User.findById(req.params.id).select("-personal_info.password")
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" })
+        }
+
+        res.json(user)
+    } catch (error) {
+        return res.status(500).json({ message: error.message })
+    }
+}
+
+// get all user info
 export const getAllUsersInfor = async (req, res) => {
     try {
         const page = parseInt(req.query.page) - 1 || 0
-        const limit = parseInt(req.query.limit) || 10
+        const limit = parseInt(req.query.limit) || 2
         const search = req.query.search || ""
         let sort = req.query.sort || "personal_info.name"
         let program = req.query.program || "All"
 
         const programOptions = [
             "Business Information Systems",
-            "Business Managaement & Marketing",
+            "Business Management & Marketing",
             "Communications",
             "Computer Science",
             "Finance International Program",
             "International Business",
             "Graphic Design and New Media",
             "Digital Business",
-        ]
+        ];
 
         program === "All"
             ? (program = [...programOptions])
-            : (program = req.query.program.split(","))
+            : (program = req.query.program.split(","));
 
-        req.query.sort ? (sort = req.query.sort.split(",")) : (sort = [sort])
+        // Sort by field and order
+        req.query.sort ? (sort = req.query.sort.split(",")) : (sort = [sort]);
 
-        let sortBy = {}
+        let sortBy = {};
         if (sort[1]) {
-            sortBy[sort[0]] = sort[1]
+            sortBy[sort[0]] = sort[1];
         } else {
-            sortBy[sort[0]] = "asc"
+            sortBy[sort[0]] = "asc";
         }
 
-        const users = await User.find({ "personal_info.name": { $regex: search, $options: "i" } })
+        // Define a mapping for role strings to role numbers
+        const roleMapping = {
+            user: [0, 5],
+            admin: [1, 3],
+            staff: [2, 4]
+        };
+
+        let searchQuery = {
+            "personal_info.program": { $in: [...program] },
+        };
+
+        // Check if search matches role strings
+        const roleSearch = roleMapping[search.toLowerCase()];
+        if (roleSearch !== undefined) {
+            searchQuery["personal_info.role"] = { $in: roleSearch };
+        } else {
+            searchQuery.$or = [
+                { "personal_info.name": { $regex: search, $options: "i" } },
+                { "personal_info.email": { $regex: search, $options: "i" } },
+                { "personal_info.program": { $regex: search, $options: "i" } },
+            ];
+        }
+
+        const users = await User.find(searchQuery)
             .select("-personal_info.password")
-            .where("personal_info.program")
-            .in([...program])
             .sort(sortBy)
             .skip(page * limit)
-            .limit(limit)
+            .limit(limit);
 
-        const totalUsers = await User.countDocuments({
-            "personal_info.program": { $in: [...program] },
-            "personal_info.name": { $regex: search, $options: "i" }
-        })
+        const totalUsers = await User.countDocuments(searchQuery);
 
         const totalPage = Math.ceil(totalUsers / limit)
 
@@ -305,13 +340,14 @@ export const getAllUsersInfor = async (req, res) => {
             limit,
             program: programOptions,
             users
-        }
+        };
 
-        res.json(response)
+        res.json(response);
     } catch (error) {
-        return res.status(500).json({ message: error.message })
+        return res.status(500).json({ message: error.message });
     }
-}
+};
+
 
 // update user info
 export const updateUser = async (req, res) => {

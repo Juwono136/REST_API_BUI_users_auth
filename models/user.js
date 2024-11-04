@@ -8,16 +8,20 @@ const userSchema = mongoose.Schema({
         binusian_id: {
             type: String,
             required: true,
+            index: true
         },
         name: {
             type: String,
             required: true,
-            trim: true
+            trim: true,
+            index: true
         },
         email: {
             type: String,
             required: true,
             trim: true,
+            unique: true,
+            index: true
         },
         password: {
             type: String,
@@ -25,7 +29,8 @@ const userSchema = mongoose.Schema({
         },
         program: {
             type: String,
-            default: ""
+            default: "",
+            index: true
         },
         address: {
             type: String,
@@ -43,7 +48,8 @@ const userSchema = mongoose.Schema({
         role: {
             type: [Number],
             required: true,
-            default: [0] // 0 = general user, 1 = admin, 2 = staff, ...
+            default: [0],
+            index: true
         },
         avatar: {
             type: String,
@@ -53,7 +59,8 @@ const userSchema = mongoose.Schema({
         },
         status: {
             type: String,
-            default: "active" // [active, inactive]
+            default: "active", // [active, inactive]
+            index: true
         }
     },
     social_links: {
@@ -87,6 +94,8 @@ const userSchema = mongoose.Schema({
         timestamps: {
             createdAt: 'joinedAt'
         }
-    })
+    });
 
-export default mongoose.model("Users", userSchema)
+userSchema.index({ "personal_info.name": 1, "personal_info.email": 1 });
+
+export default mongoose.model("Users", userSchema);
