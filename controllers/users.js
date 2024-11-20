@@ -250,6 +250,21 @@ export const getUserInfor = async (req, res) => {
     }
 }
 
+// get staff id for notification
+export const getUserStaff = async (req, res) => {
+    try {
+        const staffUsers = await User.find({ "personal_info.role": { $in: [2] } }, "_id personal_info.email").exec();
+
+        if (!staffUsers || staffUsers.length === 0) {
+            return res.status(404).json({ message: "No staff found." });
+        }
+
+        return res.status(200).json(staffUsers);
+    } catch (error) {
+        return res.status(500).json({ message: error.message })
+    }
+}
+
 // get user infor by Id
 export const getUserById = async (req, res) => {
     try {
@@ -274,6 +289,7 @@ export const getAllUsersInfor = async (req, res) => {
         const search = req.query.search || ""
         let sort = req.query.sort || "personal_info.name"
         let program = req.query.program || "All"
+        const all = req.query.all === "true";
 
         const programOptions = [
             "Business Information Systems",
@@ -320,26 +336,35 @@ export const getAllUsersInfor = async (req, res) => {
                 { "personal_info.name": { $regex: search, $options: "i" } },
                 { "personal_info.email": { $regex: search, $options: "i" } },
                 { "personal_info.program": { $regex: search, $options: "i" } },
+                { "personal_info.binusian_id": { $regex: search, $options: "i" } },
             ];
         }
 
-        const users = await User.find(searchQuery)
-            .select("-personal_info.password")
-            .sort(sortBy)
-            .skip(page * limit)
-            .limit(limit);
+        // Fetch all users if `all` is true
+        let users;
+        if (all) {
+            users = await User.find(searchQuery)
+                .select("-personal_info.password")
+                .lean();
+        } else {
+            users = await User.find(searchQuery)
+                .select("-personal_info.password")
+                .sort(sortBy)
+                .skip(page * limit)
+                .limit(limit)
+                .lean();
+        }
 
         const totalUsers = await User.countDocuments(searchQuery);
-
-        const totalPage = Math.ceil(totalUsers / limit)
+        const totalPage = all ? 1 : Math.ceil(totalUsers / limit);
 
         const response = {
             totalUsers,
             totalPage,
-            page: page + 1,
-            limit,
+            page: all ? 1 : page + 1,
+            limit: all ? totalUsers : limit,
             program: programOptions,
-            users
+            users,
         };
 
         res.json(response);

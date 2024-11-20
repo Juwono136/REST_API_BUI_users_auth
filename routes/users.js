@@ -1,7 +1,8 @@
 import express from 'express';
-import { activateEmail, forgotPassword, getAccessToken, getAllUsersInfor, getUserById, getUserInfor, logout, resetPassword, selectRole, signIn, signUp, updateUser, updateUserRole, updateUserStatus } from '../controllers/users.js';
+import { activateEmail, forgotPassword, getAccessToken, getAllUsersInfor, getUserById, getUserInfor, getUserStaff, logout, resetPassword, selectRole, signIn, signUp, updateUser, updateUserRole, updateUserStatus } from '../controllers/users.js';
 import { auth } from '../middleware/auth.js';
 import { authAdmin } from '../middleware/authAdmin.js';
+import { authAdminOrStaff } from '../middleware/authAdminOrStaff.js';
 // import { authAdminOrStaff } from '../middleware/authAdminOrStaff.js';
 
 const router = express.Router()
@@ -259,7 +260,10 @@ router.get("/user_infor", auth, getUserInfor)
  *       '500':
  *         description: Internal server error
  */
-router.get("/users/:id", auth, authAdmin, getUserById)
+router.get("/users/:id", auth, getUserById)
+
+// get user staff ids
+router.get("/get_staffs", auth, getUserStaff)
 
 /**
  * @openapi
@@ -276,7 +280,7 @@ router.get("/users/:id", auth, authAdmin, getUserById)
  *       '500':
  *         description: Internal server error
  */
-router.get("/all_infor", auth, authAdmin, getAllUsersInfor)
+router.get("/all_infor", auth, authAdminOrStaff, getAllUsersInfor)
 
 /**
  * @openapi
