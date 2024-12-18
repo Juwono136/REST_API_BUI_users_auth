@@ -3,22 +3,22 @@ import jwt from 'jsonwebtoken';
 import User from '../models/user.js';
 import { userSendMail } from './userSendMail.js';
 
-const { CLIENT_URL } = process.env
+const { DEFAULT_CLIENT_URL } = process.env
 
 // signup
 export const signUp = async (req, res) => {
     try {
-        const { binusian_id, name, email, program, password, confirmPassword } = req.body
+        const { binusian_id, name, email, program, password, confirmPassword, client_url } = req.body;
 
         if (!binusian_id || !name || !email || !program || !password || !confirmPassword) {
-            return res.status(400).json({ message: "Please fill in all fields" })
+            return res.status(400).json({ message: "Please fill in all fields" });
         }
 
-        if (name.length < 3) return res.status(400).json({ message: "Your name must be at least 3 letters long" })
+        if (name.length < 3) return res.status(400).json({ message: "Your name must be at least 3 letters long" });
 
-        if (!isMatch(password, confirmPassword)) return res.status(400).json({ message: "Password did not match" })
+        if (!isMatch(password, confirmPassword)) return res.status(400).json({ message: "Password did not match" });
 
-        if (!validateEmail(email)) return res.status(400).json({ message: "Invalid emails" })
+        if (!validateEmail(email)) return res.status(400).json({ message: "Invalid emails" });
 
         const user = await User.findOne({
             $or: [
@@ -35,11 +35,13 @@ export const signUp = async (req, res) => {
             return res.status(403).json({ message: "Your account is inactive. Please contact admin to reactivate." });
         }
 
-        // if (user) return res.status(400).json({ message: "This account already exists" })
+        if (!validatePassword(password)) {
+            return res.status(400).json({
+                message: "Password should be 6 to 20 characters long with a numeric, 1 lowercase and 1 uppercase letters"
+            });
+        }
 
-        if (!validatePassword(password)) return res.status(400).json({ message: "Password should be 6 to 20 characters long with a numeric, 1 lowercase and 1 uppercase letters" })
-
-        const passwordHash = await bcrypt.hash(password, 12)
+        const passwordHash = await bcrypt.hash(password, 12);
 
         const newUser = {
             personal_info: {
@@ -49,20 +51,21 @@ export const signUp = async (req, res) => {
                 program,
                 password: passwordHash,
             }
-        }
+        };
 
-        const activation_token = createActivationToken(newUser)
+        const activation_token = createActivationToken(newUser);
 
-        const url = `${CLIENT_URL}/user/activate/${activation_token}`
+        const url = `${client_url || DEFAULT_CLIENT_URL}/user/activate/${activation_token}`;
 
-        userSendMail(email, url, "Verify your email address", "Confirm Email")
+        userSendMail(email, url, "Verify your email address", "Confirm Email");
 
-        res.json({ message: "Register Success! Please activate your email to start" })
+        res.json({ message: "Register Success! Please activate your email to start" });
 
     } catch (error) {
-        return res.status(500).json({ message: error.message })
+        return res.status(500).json({ message: error.message });
     }
-}
+};
+
 
 // email activation
 export const activateEmail = async (req, res) => {
@@ -200,7 +203,7 @@ export const getAccessToken = async (req, res) => {
 // forgot password
 export const forgotPassword = async (req, res) => {
     try {
-        const { email } = req.body
+        const { email, client_url } = req.body
         const user = await User.findOne({ "personal_info.email": email })
 
         if (!email) return res.status(400).json({ message: "Please fill your email" })
@@ -209,7 +212,7 @@ export const forgotPassword = async (req, res) => {
         if (!user) return res.status(400).json({ message: "This email doesn't exist" })
 
         const access_token = createAccessToken({ id: user._id })
-        const url = `${CLIENT_URL}/user/reset/${access_token}`
+        const url = `${client_url || DEFAULT_CLIENT_URL}/user/reset/${access_token}`
 
         userSendMail(email, url, "Reset your account", "Reset Password")
         res.json({ message: "Please check your email for reset" })
@@ -253,7 +256,7 @@ export const getUserInfor = async (req, res) => {
 // get staff id for notification
 export const getUserStaff = async (req, res) => {
     try {
-        const staffUsers = await User.find({ "personal_info.role": { $in: [2] } }, "_id personal_info.email").exec();
+        const staffUsers = await User.find({ "personal_info.role": { $in: [2] } }, "_id personal_info.email personal_info.program").exec();
 
         if (!staffUsers || staffUsers.length === 0) {
             return res.status(404).json({ message: "No staff found." });
@@ -285,7 +288,7 @@ export const getUserById = async (req, res) => {
 export const getAllUsersInfor = async (req, res) => {
     try {
         const page = parseInt(req.query.page) - 1 || 0
-        const limit = parseInt(req.query.limit) || 2
+        const limit = parseInt(req.query.limit) || 10
         const search = req.query.search || ""
         let sort = req.query.sort || "personal_info.name"
         let program = req.query.program || "All"
