@@ -174,7 +174,8 @@ export const selectRole = async (req, res) => {
         res.json({
             message: `🖖Welcome, ${user.personal_info.name}`,
             selectedRole,
-            userRoles: user.personal_info.role
+            userRoles: user.personal_info.role,
+            id: user.id
         })
 
     } catch (error) {
