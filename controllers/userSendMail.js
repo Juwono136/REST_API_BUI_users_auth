@@ -3,8 +3,6 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export const userSendMail = (to, url, titleTxt, btnTxt, res) => {
-
-
     let config = {
         service: 'gmail',
         auth: {
