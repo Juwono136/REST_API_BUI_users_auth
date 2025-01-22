@@ -16,7 +16,7 @@ export const userSendMail = (to, url, titleTxt, btnTxt, res) => {
     let mailOptions = {
         from: process.env.EMAIL_USER,
         to: to,
-        subject: "InventorCS Mail Support",
+        subject: "CSBI Team Mail Support",
         html: `<!DOCTYPE html>
                 <html>
                 <head>
@@ -199,7 +199,7 @@ export const userSendMail = (to, url, titleTxt, btnTxt, res) => {
                         <!-- start copy -->
                         <tr>
                             <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px; border-bottom: 3px solid #d4dadf">
-                            <p style="margin: 0;">Thanks,<br>-- InventoryCS Support Team --</p>
+                            <p style="margin: 0;">Thanks,<br>-- CSBI Support Team --</p>
                             </td>
                         </tr>
                         <!-- end copy -->
@@ -225,7 +225,7 @@ export const userSendMail = (to, url, titleTxt, btnTxt, res) => {
                         <!-- start unsubscribe -->
                         <tr>
                             <td align="center" bgcolor="#e9ecef" style="padding: 12px 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 14px; line-height: 20px; color: #666;">
-                            <p style="margin: 0;">InventoryCS - Binus University International</p>
+                            <p style="margin: 0;">CSBI Support Team - Binus University International</p>
                             </td>
                         </tr>
                         <!-- end unsubscribe -->
