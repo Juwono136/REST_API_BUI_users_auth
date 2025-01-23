@@ -4,10 +4,14 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
-import swaggerUi from "swagger-ui-express"
+import swaggerUi from "swagger-ui-express";
+import helmet from 'helmet';
 
 import userRoutes from './routes/users.js';
 import swaggerSpec from './utils/swagger.js';
+
+import { errorHandler } from './middleware/errorMiddleware.js';
+import { sanitizeInput } from './middleware/sanitizeMiddleware.js';
 
 const app = express()
 dotenv.config()
@@ -22,11 +26,26 @@ const corsOptions = {
 
 app.use(cors(corsOptions))
 app.use(cookieParser())
+app.use(helmet());
+
+app.use(sanitizeInput);
 
 app.use("/api/user", userRoutes)
 
 // api documentation
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+
+
+// Serve frontend
+if (process.env.NODE_ENV === 'production') {
+    app.get('/', (req, res) => {
+        res.redirect(process.env.CLIENT_URL);
+    });
+} else {
+    app.get('/', (req, res) => res.send('Backend is running. Please access the front-end.'));
+}
+
+app.use(errorHandler)
 
 const CONNECTION_URL = process.env.CONNECTION_URL
 const PORT = process.env.PORT
