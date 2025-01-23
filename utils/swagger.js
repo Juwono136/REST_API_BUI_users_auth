@@ -139,7 +139,7 @@ const swaggerSpec = swaggerJsDoc({
                 description: 'Local server',
             },
             {
-                url: process.env.NGROK_SERVER,
+                url: process.env.INTERNET_SERVER,
                 description: 'Internet server'
             }
         ],

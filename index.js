@@ -35,7 +35,6 @@ app.use("/api/user", userRoutes)
 // api documentation
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
-
 // Serve frontend
 if (process.env.NODE_ENV === 'production') {
     app.get('/', (req, res) => {
