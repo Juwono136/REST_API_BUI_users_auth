@@ -51,7 +51,7 @@ jobs:
             --standalone \
             -d ${{ secrets.DUCKDNS_DOMAIN }} \
             --non-interactive --agree-tos \
-            --email ${{ secrets.EMAIL_USER }}
+            --email ${{ secrets.EMAIL_DUCKDNS }}
 
       - name: Run Docker Container with SSL
         run: |
