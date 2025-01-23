@@ -33,7 +33,7 @@ app.use(sanitizeInput);
 app.use("/api/user", userRoutes)
 
 // api documentation
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+app.use("/users/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
 // Serve frontend
 if (process.env.NODE_ENV === 'production') {
