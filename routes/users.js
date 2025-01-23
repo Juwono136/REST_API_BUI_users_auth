@@ -3,7 +3,6 @@ import { activateEmail, forgotPassword, getAccessToken, getAllUsersInfor, getUse
 import { auth } from '../middleware/auth.js';
 import { authAdmin } from '../middleware/authAdmin.js';
 import { authAdminOrStaff } from '../middleware/authAdminOrStaff.js';
-// import { authAdminOrStaff } from '../middleware/authAdminOrStaff.js';
 
 const router = express.Router()
 
@@ -197,7 +196,7 @@ router.post("/forgot", forgotPassword)
  *   post:
  *     tags:
  *       - Users
- *     summary: Reset user password
+ *     summary: Reset user password (need auth)
  *     requestBody:
  *       required: true
  *       content:
@@ -227,7 +226,7 @@ router.post("/reset", auth, resetPassword)
  *   get:
  *     tags:
  *       - Users
- *     summary: Get user information
+ *     summary: Get user information (need auth)
  *     responses:
  *       '200':
  *         description: User information retrieved
@@ -244,7 +243,7 @@ router.get("/user_infor", auth, getUserInfor)
  *   get:
  *     tags:
  *       - Users
- *     summary: Get user information by user ID
+ *     summary: Get user information by user ID (need auth)
  *     parameters:
  *       - name: id
  *         in: path
@@ -262,7 +261,21 @@ router.get("/user_infor", auth, getUserInfor)
  */
 router.get("/users/:id", auth, getUserById)
 
-// get user staff ids
+/**
+ * @openapi
+ * /get_staffs:
+ *   get:
+ *     tags:
+ *       - Users
+ *     summary: Get all users staff (need auth)
+ *     responses:
+ *       '200':
+ *         description: get all users staff successfully
+ *       '404':
+ *         description: User Not Found
+ *       '500':
+ *         description: Internal server error
+ */
 router.get("/get_staffs", auth, getUserStaff)
 
 /**
@@ -271,7 +284,7 @@ router.get("/get_staffs", auth, getUserStaff)
  *   get:
  *     tags:
  *       - Users
- *     summary: Get all users information
+ *     summary: Get all users information (need auth)
  *     responses:
  *       '200':
  *         description: All users information retrieved
@@ -305,7 +318,7 @@ router.get("/logout", logout)
  *   patch:
  *     tags:
  *       - Users
- *     summary: Update user information
+ *     summary: Update user information (need auth)
  *     requestBody:
  *       required: true
  *       content:
@@ -365,7 +378,7 @@ router.patch("/update_user", auth, updateUser)
  *   patch:
  *     tags:
  *       - Users
- *     summary: Update user role
+ *     summary: Update user role (need auth)
  *     parameters:
  *       - name: id
  *         in: path

@@ -254,6 +254,21 @@ export const getUserInfor = async (req, res) => {
     }
 }
 
+// get user infor by Id
+export const getUserById = async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id).select("-personal_info.password")
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" })
+        }
+
+        res.json(user)
+    } catch (error) {
+        return res.status(500).json({ message: error.message })
+    }
+}
+
 // get staff id for notification
 export const getUserStaff = async (req, res) => {
     try {
@@ -264,22 +279,6 @@ export const getUserStaff = async (req, res) => {
         }
 
         return res.status(200).json(staffUsers);
-    } catch (error) {
-        return res.status(500).json({ message: error.message })
-    }
-}
-
-// get user infor by Id
-export const getUserById = async (req, res) => {
-    try {
-
-        const user = await User.findById(req.params.id).select("-personal_info.password")
-
-        if (!user) {
-            return res.status(404).json({ message: "User not found" })
-        }
-
-        res.json(user)
     } catch (error) {
         return res.status(500).json({ message: error.message })
     }
@@ -507,6 +506,15 @@ export const updateUserStatus = async (req, res) => {
     }
 }
 
+export const logout = async (req, res) => {
+    try {
+        res.clearCookie('refreshtoken', { path: 'api/user/refresh_token' })
+        return res.json({ message: "Logged out success" });
+    } catch (error) {
+        return res.status(500).json({ message: error.message });
+    }
+};
+
 // delete user permanently
 // export const deleteUser = async (req, res) => {
 //     try {
@@ -522,16 +530,8 @@ export const updateUserStatus = async (req, res) => {
 //     }
 // }
 
-// logout
-export const logout = async (req, res) => {
-    try {
-        res.clearCookie('refreshtoken', { path: 'api/user/refresh_token' })
-        return res.json({ message: "Logged out success" });
-    } catch (error) {
-        return res.status(500).json({ message: error.message });
-    }
-};
 
+// User logout
 
 function validateEmail(email) {
     const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;

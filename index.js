@@ -24,6 +24,8 @@ app.use(cors(corsOptions))
 app.use(cookieParser())
 
 app.use("/api/user", userRoutes)
+
+// api documentation
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
 const CONNECTION_URL = process.env.CONNECTION_URL
