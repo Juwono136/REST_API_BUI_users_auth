@@ -43,22 +43,11 @@ jobs:
           docker stop restapi-users-container || true
           docker rm restapi-users-container || true
 
-      - name: Setup HTTPS with Let's Encrypt
-        run: |
-          docker run --rm \
-            -v /etc/letsencrypt:/etc/letsencrypt \
-            certbot/certbot certonly \
-            --standalone \
-            -d ${{ secrets.DUCKDNS_DOMAIN }} \
-            --non-interactive --agree-tos \
-            --email ${{ secrets.EMAIL_DUCKDNS }}
-
-      - name: Run Docker Container with SSL
+      - name: Run Docker Container
         run: |
           docker run -d \
-            -p 443:5000 \
-            -v /etc/letsencrypt:/etc/letsencrypt:ro \
+            -p 80:5000 \
             --name restapi-users-container \
-            -e PORT=5000 \
+            -e PORT=${{ secrets.PORT }} \
             -e CONNECTION_URL='${{ secrets.CONNECTION_URL }}' \
             juwono136/restapi-users
