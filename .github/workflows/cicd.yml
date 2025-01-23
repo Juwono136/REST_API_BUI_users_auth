@@ -17,10 +17,13 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+
       - name: Login to Docker Hub
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
       - name: Build Docker Image
         run: docker build -t juwono136/restapi-users  .
+
       - name: Publish Image to Docker Hub
         run: docker push juwono136/restapi-users:latest
 
@@ -30,7 +33,30 @@ jobs:
     steps:
       - name: Pull image from docker hub
         run: docker pull juwono136/restapi-users:latest
+
+      - name: Update Duck DNS
+        run: |
+          curl "https://www.duckdns.org/update?domains=${{ secrets.DUCKDNS_DOMAIN }}&token=${{ secrets.DUCKDNS_TOKEN }}&ip="
+
       - name: Delete old container
         run: docker rm -f restapi-users-container
+
       - name: Run Docker Container
-        run: docker run -d -p 5000:5000 --name restapi-users-container -e PORT=5000 -e CONNECTION_URL='${{ secrets.CONNECTION_URL }}' juwono136/restapi-users
+        run: |
+          docker run -d \
+            -p 443:5000 \
+            -v /etc/letsencrypt:/etc/letsencrypt:ro \
+            --name restapi-users-container \
+            -e PORT=5000 \
+            -e CONNECTION_URL='${{ secrets.CONNECTION_URL }}' \
+            juwono136/restapi-users
+
+      - name: Setup HTTPS with Let's Encrypt
+        run: |
+          docker run --rm \
+            -v /etc/letsencrypt:/etc/letsencrypt \
+            certbot/certbot certonly \
+            --standalone \
+            -d ${{ secrets.DUCKDNS_DOMAIN }} \
+            --non-interactive --agree-tos \
+            --email ${{ secrets.EMAIL_USER }}
