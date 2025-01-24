@@ -34,10 +34,6 @@ jobs:
       - name: Pull image from docker hub
         run: docker pull juwono136/restapi-users:latest
 
-      - name: Update Duck DNS
-        run: |
-          curl -k "https://www.duckdns.org/update?domains=${{ secrets.DUCKDNS_DOMAIN }}&token=${{ secrets.DUCKDNS_TOKEN }}&ip="
-
       - name: Stop and Delete Old Container
         run: |
           docker stop restapi-users-container || true
