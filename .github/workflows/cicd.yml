@@ -49,4 +49,4 @@ jobs:
             juwono136/restapi-users
 
       - name: Reload NGINX
-        run: systemctl reload nginx
+        run: sudo systemctl reload nginx
