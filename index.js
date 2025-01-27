@@ -21,27 +21,42 @@ app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }))
 
 const corsOptions = {
     origin: process.env.CLIENT_URL,
+    allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
 };
 
 app.use(cors(corsOptions))
 app.use(cookieParser())
 
+// Helmet security headers
 app.use(
     helmet({
         hsts: process.env.NODE_ENV === 'production', // Enable HSTS only in production
+        contentSecurityPolicy: {
+            directives: {
+                defaultSrc: ["'self'"],
+                scriptSrc: ["'self'", "'unsafe-inline'"],
+                objectSrc: ["'none'"],
+                upgradeInsecureRequests: [],
+            },
+        },
     })
 );
 
 // Ensure trust for reverse proxies (e.g., Nginx or cloud hosting)
 app.set('trust proxy', true);
 
+// COOP header to prevent cross-origin opener issues
+app.use((req, res, next) => {
+    res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+    res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+    next();
+});
+
 app.use(sanitizeInput);
 
 app.use("/api/user", userRoutes)
-
-// api documentation
-app.use("/users/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+app.use("/users/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec)) // api documentation
 
 // Serve frontend
 if (process.env.NODE_ENV === 'production') {

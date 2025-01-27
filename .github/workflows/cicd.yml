@@ -47,6 +47,3 @@ jobs:
             -e PORT=${{ secrets.PORT }} \
             -e CONNECTION_URL='${{ secrets.CONNECTION_URL }}' \
             juwono136/restapi-users
-
-      - name: Reload NGINX
-        run: sudo systemctl reload nginx
