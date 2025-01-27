@@ -5,7 +5,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import swaggerUi from "swagger-ui-express";
-import helmet from 'helmet';
+// import helmet from 'helmet';
 
 import userRoutes from './routes/users.js';
 import swaggerSpec from './utils/swagger.js';
@@ -29,27 +29,30 @@ app.use(cors(corsOptions))
 app.use(cookieParser())
 
 // Helmet security headers
-app.use(
-    helmet({
-        hsts: process.env.NODE_ENV === 'production', // Enable HSTS only in production
-        contentSecurityPolicy: {
-            directives: {
-                defaultSrc: ["'self'"],
-                scriptSrc: ["'self'", "'unsafe-inline'"],
-                objectSrc: ["'none'"],
-                upgradeInsecureRequests: [],
-            },
-        },
-    })
-);
+// app.use(
+//     helmet({
+//         hsts: process.env.NODE_ENV === 'production', // Enable HSTS only in production
+//         contentSecurityPolicy: {
+//             directives: {
+//                 defaultSrc: ["'self'"],
+//                 scriptSrc: ["'self'", "'unsafe-inline'"],
+//                 objectSrc: ["'none'"],
+//                 upgradeInsecureRequests: [],
+//             },
+//         },
+//     })
+// );
 
 // Ensure trust for reverse proxies (e.g., Nginx or cloud hosting)
 app.set('trust proxy', true);
 
 // COOP header to prevent cross-origin opener issues
 app.use((req, res, next) => {
-    res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
-    res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+    // Avoid COOP headers when not using HTTPS
+    if (req.protocol === 'https') {
+        res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');
+        res.setHeader('Cross-Origin-Embedder-Policy', 'require-corp');
+    }
     next();
 });
 
