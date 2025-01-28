@@ -49,4 +49,4 @@ jobs:
             juwono136/restapi-users
 
       - name: Add Container to Tunnel
-        run: docker connect ${{secrets.TUNNEL_NAME}} restapi-users-container
+        run: docker network connect ${{secrets.TUNNEL_NAME}} restapi-users-container
