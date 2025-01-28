@@ -1,10 +1,12 @@
 import swaggerJsDoc from "swagger-jsdoc";
+import dotenv from 'dotenv';
 
 import path from "path";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+dotenv.config()
 
 /**
  * @swagger
@@ -136,11 +138,11 @@ const swaggerSpec = swaggerJsDoc({
         servers: [
             {
                 url: 'http://localhost:5000/api/user',
-                description: 'Local server',
+                description: 'Local Server',
             },
             {
                 url: `${process.env.INTERNET_SERVER}/api/user`,
-                description: 'Internet server'
+                description: 'Internet Server'
             }
         ],
         security: [

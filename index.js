@@ -47,7 +47,7 @@ if (process.env.NODE_ENV === 'production') {
         res.redirect(process.env.CLIENT_URL);
     });
 } else {
-    app.get('/', (req, res) => res.send('Backend is running. Please access the front-end.'));
+    app.get('/', (req, res) => res.send('Backend is running.'));
 }
 
 app.use(errorHandler)

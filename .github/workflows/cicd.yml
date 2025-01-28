@@ -47,3 +47,6 @@ jobs:
             -e PORT=${{ secrets.PORT }} \
             -e CONNECTION_URL='${{ secrets.CONNECTION_URL }}' \
             juwono136/restapi-users
+
+      - name: Add Container to Tunnel
+        run: docker connect ${{secrets.TUNNEL_NAME}} restapi-users-container
