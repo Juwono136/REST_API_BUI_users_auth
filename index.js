@@ -5,7 +5,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import swaggerUi from "swagger-ui-express";
-// import helmet from 'helmet';
+import helmet from 'helmet';
 
 import userRoutes from './routes/users.js';
 import swaggerSpec from './utils/swagger.js';
@@ -27,11 +27,11 @@ const corsOptions = {
 app.use(cors(corsOptions))
 app.use(cookieParser())
 
-// app.use(
-//     helmet({
-//         hsts: process.env.NODE_ENV === 'production', // Enable HSTS only in production
-//     })
-// );
+app.use(
+    helmet({
+        hsts: process.env.NODE_ENV === 'production', // Enable HSTS only in production
+    })
+);
 
 // Ensure trust for reverse proxies (e.g., Nginx or cloud hosting)
 app.set('trust proxy', true);
@@ -39,9 +39,7 @@ app.set('trust proxy', true);
 app.use(sanitizeInput);
 
 app.use("/api/user", userRoutes)
-
-// api documentation
-app.use("/users/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+app.use("/users/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec)) // api documentation
 
 // Serve frontend
 if (process.env.NODE_ENV === 'production') {
