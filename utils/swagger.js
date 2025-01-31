@@ -141,7 +141,7 @@ const swaggerSpec = swaggerJsDoc({
                 description: 'Local Server',
             },
             {
-                url: `https://portproject.my.id/api/user`,
+                url: `${process.env.INTERNET_SERVER}/api/user`,
                 description: 'Internet Server'
             }
         ],
