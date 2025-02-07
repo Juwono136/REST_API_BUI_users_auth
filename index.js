@@ -21,7 +21,7 @@ app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }))
 
 const corsOptions = {
     origin: process.env.CLIENT_URL,
-    credentials: true,
+    credentials: false,
 };
 
 app.use(cors(corsOptions))
@@ -29,7 +29,16 @@ app.use(cookieParser())
 
 app.use(
     helmet({
-        hsts: process.env.NODE_ENV === 'production', // Enable HSTS only in production
+        contentSecurityPolicy: {
+            directives: {
+                defaultSrc: ["'self'"],
+                scriptSrc: ["'self'", "'unsafe-inline'", "cdn.jsdelivr.net"],
+                styleSrc: ["'self'", "'unsafe-inline'", "cdn.jsdelivr.net"],
+                imgSrc: ["'self'", "data:", "cdn.jsdelivr.net"],
+                connectSrc: ["'self'", process.env.INTERNET_SERVER],
+            },
+        },
+        hsts: process.env.NODE_ENV === 'production',
     })
 );
 

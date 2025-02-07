@@ -38,6 +38,7 @@ jobs:
         run: |
           docker stop restapi-users-container || true
           docker rm restapi-users-container || true
+          docker image prune -a || true
 
       - name: Run Docker Container
         run: |

@@ -138,11 +138,11 @@ const swaggerSpec = swaggerJsDoc({
         servers: [
             {
                 url: 'http://localhost:5000/api/user',
-                description: 'Local Server',
+                description: 'Development',
             },
             {
                 url: `${process.env.INTERNET_SERVER}/api/user`,
-                description: 'Internet Server'
+                description: 'Production'
             }
         ],
         security: [
