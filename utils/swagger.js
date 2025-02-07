@@ -141,7 +141,7 @@ const swaggerSpec = swaggerJsDoc({
                 description: 'Development',
             },
             {
-                url: `${process.env.INTERNET_SERVER}/api/user`,
+                url: "https://csbi-users.portproject.my.id/api/user",
                 description: 'Production'
             }
         ],
