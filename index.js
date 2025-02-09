@@ -48,7 +48,7 @@ app.set('trust proxy', true);
 app.use(sanitizeInput);
 
 app.use("/api/user", userRoutes)
-app.use("/users/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec)) // api documentation
+app.use("/users/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
 // Serve frontend
 if (process.env.NODE_ENV === 'production') {
