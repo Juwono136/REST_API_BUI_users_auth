@@ -42,11 +42,9 @@ app.use(
                 connectSrc: [
                     "'self'",
                     process.env.INTERNET_SERVER,
-                    process.env.CONNECTION_URL,
                 ],
             },
         },
-        hsts: process.env.NODE_ENV === 'production',
     })
 );
 
