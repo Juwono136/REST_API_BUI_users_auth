@@ -24,6 +24,10 @@ const corsOptions = {
     credentials: false,
 };
 
+const CONNECTION_URL = process.env.CONNECTION_URL
+const PORT = process.env.PORT
+const DB_NAME = process.env.DB_NAME;
+
 app.use(cors(corsOptions))
 app.use(cookieParser())
 
@@ -35,7 +39,11 @@ app.use(
                 scriptSrc: ["'self'", "'unsafe-inline'", "cdn.jsdelivr.net"],
                 styleSrc: ["'self'", "'unsafe-inline'", "cdn.jsdelivr.net"],
                 imgSrc: ["'self'", "data:", "cdn.jsdelivr.net"],
-                connectSrc: ["'self'", process.env.INTERNET_SERVER],
+                connectSrc: [
+                    "'self'",
+                    process.env.INTERNET_SERVER,
+                    process.env.CONNECTION_URL,
+                ],
             },
         },
         hsts: process.env.NODE_ENV === 'production',
@@ -60,10 +68,6 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 app.use(errorHandler)
-
-const CONNECTION_URL = process.env.CONNECTION_URL
-const PORT = process.env.PORT
-const DB_NAME = process.env.DB_NAME;
 
 mongoose.set("strictQuery", true)
 
