@@ -54,7 +54,9 @@ app.set('trust proxy', true);
 app.use(sanitizeInput);
 
 app.use("/api/user", userRoutes)
-app.use("/users/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec))
+app.use("/users/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+    customSiteTitle: "User Management API",
+}))
 
 // Serve frontend
 if (process.env.NODE_ENV === 'production') {
