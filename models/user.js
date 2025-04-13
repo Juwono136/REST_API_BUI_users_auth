@@ -61,7 +61,7 @@ const userSchema = mongoose.Schema({
             type: String,
             default: "active", // [active, inactive]
             index: true
-        }
+        },
     },
     social_links: {
         youtube: {

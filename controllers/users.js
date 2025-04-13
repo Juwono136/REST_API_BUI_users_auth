@@ -10,7 +10,7 @@ export const signUp = async (req, res) => {
     try {
         const { binusian_id, name, email, program, password, confirmPassword, client_url } = req.body;
 
-        if (!binusian_id || !name || !email || !program || !password || !confirmPassword) {
+        if (!binusian_id || !name || !email || !password || !confirmPassword) {
             return res.status(400).json({ message: "Please fill in all fields" });
         }
 
@@ -19,6 +19,34 @@ export const signUp = async (req, res) => {
         if (!isMatch(password, confirmPassword)) return res.status(400).json({ message: "Password did not match" });
 
         if (!validateEmail(email)) return res.status(400).json({ message: "Invalid emails" });
+
+        if (!validatePassword(password)) {
+            return res.status(400).json({
+                message: "Password should be 6 to 20 characters long with a numeric, 1 lowercase and 1 uppercase letters"
+            });
+        }
+
+        if (program) {
+            return res.status(400).json({
+                message: "Please register using Binus email"
+            });
+        }
+
+        const isBinusEmail = validateBinusEmail(email);
+
+        // Prevent users who do not use BINUS email and also do not fill in the program
+        if (!isBinusEmail && !program && !binusian_id) {
+            return res.status(400).json({
+                message: "You must register through a BINUS email or provide program and binusian ID for register in this app."
+            });
+        }
+
+        // If the email is BINUS, then the program and binusian_id are mandatory
+        if (isBinusEmail) {
+            if (!binusian_id || !program || program.trim() === "") {
+                return res.status(400).json({ message: "Please fill in all fields" });
+            }
+        }
 
         const user = await User.findOne({
             $or: [
@@ -33,12 +61,6 @@ export const signUp = async (req, res) => {
 
         if (user && user.personal_info.status === 'inactive') {
             return res.status(403).json({ message: "Your account is inactive. Please contact admin to reactivate." });
-        }
-
-        if (!validatePassword(password)) {
-            return res.status(400).json({
-                message: "Password should be 6 to 20 characters long with a numeric, 1 lowercase and 1 uppercase letters"
-            });
         }
 
         const passwordHash = await bcrypt.hash(password, 12);
@@ -535,6 +557,11 @@ export const logout = async (req, res) => {
 
 function validateEmail(email) {
     const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email);
+}
+
+function validateBinusEmail(email) {
+    const re = /@binus\.edu$|@binus\.ac\.id$/;
     return re.test(email);
 }
 
