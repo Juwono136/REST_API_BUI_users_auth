@@ -139,6 +139,10 @@ const swaggerSpec = swaggerJsDoc({
             {
                 url: 'http://localhost:5000/api/user',
                 description: 'Development',
+            },
+            {
+                url: "https://csbi-users.csbihub.id/api/user",
+                description: 'Production'
             }
         ],
         security: [

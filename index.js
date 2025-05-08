@@ -20,7 +20,7 @@ app.use(bodyParser.json({ limit: "30mb", extended: true }))
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }))
 
 const corsOptions = {
-    origin: process.env.CLIENT_URL,
+    origin: process.env.DEFAULT_CLIENT_URL,
     credentials: false,
 };
 
@@ -61,7 +61,7 @@ app.use("/users/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
 // Serve frontend
 if (process.env.NODE_ENV === 'production') {
     app.get('/', (req, res) => {
-        res.redirect(process.env.CLIENT_URL);
+        res.redirect(process.env.DEFAULT_CLIENT_URL);
     });
 } else {
     app.get('/', (req, res) => res.send('Backend is running.'));
