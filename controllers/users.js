@@ -88,7 +88,6 @@ export const signUp = async (req, res) => {
     }
 };
 
-
 // email activation
 export const activateEmail = async (req, res) => {
     try {
