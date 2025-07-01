@@ -8,7 +8,7 @@ const { DEFAULT_CLIENT_URL } = process.env
 // signup
 export const signUp = async (req, res) => {
     try {
-        const { binusian_id, name, email, program, password, confirmPassword, client_url } = req.body;
+        const { binusian_id, name, email, password, program, confirmPassword, client_url } = req.body;
 
         if (!binusian_id || !name || !email || !password || !confirmPassword) {
             return res.status(400).json({ message: "Please fill in all fields" });
