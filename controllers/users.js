@@ -10,45 +10,50 @@ export const signUp = async (req, res) => {
   try {
     const { binusian_id, name, email, password, program, confirmPassword, client_url } = req.body;
 
-    if (!binusian_id || !name || !email || !password || !confirmPassword) {
+    if (!name || !email || !password || !confirmPassword) {
       return res.status(400).json({ message: "Please fill in all fields" });
     }
 
-    if (name.length < 3)
+    if (name.length < 3) {
       return res.status(400).json({ message: "Your name must be at least 3 letters long" });
+    }
 
-    if (!isMatch(password, confirmPassword))
+    if (!isMatch(password, confirmPassword)) {
       return res.status(400).json({ message: "Password did not match" });
+    }
 
-    if (!validateEmail(email)) return res.status(400).json({ message: "Invalid emails" });
+    if (!validateEmail(email)) {
+      return res.status(400).json({ message: "Invalid email format" });
+    }
 
     if (!validatePassword(password)) {
       return res.status(400).json({
         message:
-          "Password should be 6 to 20 characters long with a numeric, 1 lowercase and 1 uppercase letters",
-      });
-    }
-
-    if (!program) {
-      return res.status(400).json({
-        message: "Please register using Binus email",
+          "Password should be 6 to 20 characters long with a numeric, 1 lowercase and 1 uppercase letter",
       });
     }
 
     const isBinusEmail = validateBinusEmail(email);
 
-    // Prevent users who do not use BINUS email and also do not fill in the program
-    if (!isBinusEmail && !program && !binusian_id) {
-      return res.status(400).json({
-        message:
-          "You must register through a BINUS email or provide program and binusian ID for register in this app.",
-      });
-    }
-
-    // If the email is BINUS, then the program and binusian_id are mandatory
     if (isBinusEmail) {
+      // BINUS email must have both binusian_id and program
       if (!binusian_id || !program || program.trim() === "") {
-        return res.status(400).json({ message: "Please fill in all fields" });
+        return res.status(400).json({
+          message: "Please fill in all fields",
+        });
+      }
+    } else {
+      // Non-BINUS email must have binusian_id (can be other ID), and must NOT fill in program
+      if (!binusian_id) {
+        return res.status(400).json({
+          message: "Please fill in all fields",
+        });
+      }
+
+      if (program && program.trim() !== "") {
+        return res.status(400).json({
+          message: "Invalid Credentials",
+        });
       }
     }
 
@@ -73,7 +78,7 @@ export const signUp = async (req, res) => {
         binusian_id,
         name,
         email,
-        program,
+        program: program || null,
         password: passwordHash,
       },
     };
@@ -165,7 +170,7 @@ export const signIn = async (req, res) => {
     // if user only has 1 role
     if (roles.length === 1) {
       res.json({
-        message: `🖖Welcome, ${user.personal_info.name}`,
+        message: `🖖Welcome, ${user.personal_info.name.split(" ").slice(0, 2).join(" ")}`,
         selectedRole: roles[0],
         userRoles: roles,
       });
