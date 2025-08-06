@@ -8,14 +8,36 @@ const { DEFAULT_CLIENT_URL } = process.env;
 // signup
 export const signUp = async (req, res) => {
   try {
-    const { binusian_id, name, email, password, program, confirmPassword, client_url } = req.body;
+    const {
+      binusian_id,
+      name,
+      email,
+      program,
+      address,
+      phone,
+      password,
+      confirmPassword,
+      client_url,
+    } = req.body;
 
-    if (!name || !email || !password || !confirmPassword) {
+    if (!name || !email || !address || !phone || !password || !confirmPassword) {
       return res.status(400).json({ message: "Please fill in all fields" });
     }
 
     if (name.length < 3) {
       return res.status(400).json({ message: "Your name must be at least 3 letters long" });
+    }
+
+    if (address.length < 6) {
+      return res
+        .status(400)
+        .json({ message: "Your address is too short (at least 6 letters long)." });
+    }
+
+    if (!validatePhoneNumber(phone)) {
+      return res.status(400).json({
+        message: "Invalid phone number format. Only digits and symbols like + - ( ) are allowed.",
+      });
     }
 
     if (!isMatch(password, confirmPassword)) {
@@ -78,6 +100,8 @@ export const signUp = async (req, res) => {
         binusian_id,
         name,
         email,
+        address,
+        phone,
         program: program || null,
         password: passwordHash,
       },
@@ -101,7 +125,7 @@ export const activateEmail = async (req, res) => {
     const { activation_token } = req.body;
     const user = jwt.verify(activation_token, process.env.ACTIVATION_TOKEN_SECRET);
 
-    const { binusian_id, name, email, program, password } = user.personal_info;
+    const { binusian_id, name, email, address, phone, program, password } = user.personal_info;
 
     const existingUser = await User.findOne({ "personal_info.email": email });
     // if (check) return res.status(400).json({ message: "This email already exists" })
@@ -122,6 +146,8 @@ export const activateEmail = async (req, res) => {
       "personal_info.binusian_id": binusian_id,
       "personal_info.name": name,
       "personal_info.email": email,
+      "personal_info.address": address,
+      "personal_info.phone": phone,
       "personal_info.program": program,
       "personal_info.password": password,
       "personal_info.role": [0],
@@ -448,6 +474,12 @@ export const updateUser = async (req, res) => {
     if (name.length < 3)
       return res.status(400).json({ message: "Your name must be at least 3 letters long" });
 
+    if (!validatePhoneNumber(phone)) {
+      return res.status(400).json({
+        message: "Invalid phone number format. Only digits and symbols like + - ( ) are allowed.",
+      });
+    }
+
     if (name === "") return res.status(400).json({ message: "Name cannot be empty" });
 
     const updateFields = {
@@ -613,6 +645,11 @@ function validatePassword(password) {
 function isMatch(password, confirm_password) {
   if (password === confirm_password) return true;
   return false;
+}
+
+function validatePhoneNumber(phone) {
+  const re = /^[0-9+\-\s()]+$/;
+  return re.test(phone);
 }
 
 function createRefreshToken(payload) {
