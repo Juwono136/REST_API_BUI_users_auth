@@ -1,23 +1,23 @@
-import nodemailer from 'nodemailer';
-import dotenv from 'dotenv';
+import nodemailer from "nodemailer";
+import dotenv from "dotenv";
 dotenv.config();
 
 export const userSendMail = (to, url, titleTxt, btnTxt, res) => {
-    let config = {
-        service: 'gmail',
-        auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASSWORD
-        }
-    }
+  let config = {
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASSWORD,
+    },
+  };
 
-    let transporter = nodemailer.createTransport(config)
+  let transporter = nodemailer.createTransport(config);
 
-    let mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: to,
-        subject: "CSBI Team Mail Support",
-        html: `<!DOCTYPE html>
+  let mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: to,
+    subject: "CSBI Team Mail Support",
+    html: `<!DOCTYPE html>
                 <html>
                 <head>
                 <meta charset="utf-8">
@@ -191,7 +191,7 @@ export const userSendMail = (to, url, titleTxt, btnTxt, res) => {
                         <!-- start countdown -->
                         <tr>
                             <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
-                            <p class="countdown" id="countdown">Note: This link will expire in 3 minutes.</p>
+                            <p class="countdown" id="countdown">Note: This link will expire in 15 minutes.</p>
                             </td>
                         </tr>
                         <!-- end countdown -->
@@ -241,10 +241,10 @@ export const userSendMail = (to, url, titleTxt, btnTxt, res) => {
                 </body>
                 </html>
 `,
-    }
+  };
 
-    transporter.sendMail(mailOptions, (err, info) => {
-        if (err) return err
-        return info
-    })
-}
+  transporter.sendMail(mailOptions, (err, info) => {
+    if (err) return err;
+    return info;
+  });
+};

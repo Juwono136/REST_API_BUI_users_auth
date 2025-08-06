@@ -620,9 +620,9 @@ function createRefreshToken(payload) {
 }
 
 function createAccessToken(payload) {
-  return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "3m" });
+  return jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
 }
 
 function createActivationToken(payload) {
-  return jwt.sign(payload, process.env.ACTIVATION_TOKEN_SECRET, { expiresIn: "3m" });
+  return jwt.sign(payload, process.env.ACTIVATION_TOKEN_SECRET, { expiresIn: "15m" });
 }
