@@ -1,10 +1,26 @@
-import express from 'express';
-import { activateEmail, forgotPassword, getAccessToken, getAllUsersInfor, getUserById, getUserInfor, getUserStaff, logout, resetPassword, selectRole, signIn, signUp, updateUser, updateUserRole, updateUserStatus } from '../controllers/users.js';
-import { auth } from '../middleware/auth.js';
-import { authAdmin } from '../middleware/authAdmin.js';
-import { authAdminOrStaff } from '../middleware/authAdminOrStaff.js';
+import express from "express";
+import {
+  activateEmail,
+  forgotPassword,
+  getAccessToken,
+  getAllUsersInfor,
+  getUserById,
+  getUserInfor,
+  getUserStaff,
+  logout,
+  resetPassword,
+  selectRole,
+  signIn,
+  signUp,
+  updateUser,
+  updateUserRole,
+  updateUserStatus,
+} from "../controllers/users.js";
+import { auth } from "../middleware/auth.js";
+import { authAdmin } from "../middleware/authAdmin.js";
+import { authAdminOrStaff } from "../middleware/authAdminOrStaff.js";
 
-const router = express.Router()
+const router = express.Router();
 
 /**
  * @openapi
@@ -36,9 +52,12 @@ const router = express.Router()
  *               email:
  *                 type: string
  *                 example: "john.doe@example.com"
- *               program:
+ *               address:
  *                 type: string
- *                 example: "Computer Science"
+ *                 example: "FX Campus, Senayan, Jakarta"
+ *               phone:
+ *                 type: string
+ *                 example: "+62896322873830"
  *               password:
  *                 type: string
  *                 example: "Password123"
@@ -55,7 +74,7 @@ const router = express.Router()
  *       '500':
  *         description: Internal server error
  */
-router.post("/signup", signUp)
+router.post("/signup", signUp);
 
 /**
  * @openapi
@@ -82,7 +101,7 @@ router.post("/signup", signUp)
  *       '500':
  *         description: Internal server error
  */
-router.post("/activation", activateEmail)
+router.post("/activation", activateEmail);
 
 /**
  * @openapi
@@ -114,7 +133,7 @@ router.post("/activation", activateEmail)
  *       '500':
  *         description: Internal server error
  */
-router.post("/signin", signIn)
+router.post("/signin", signIn);
 
 /**
  * @openapi
@@ -144,7 +163,7 @@ router.post("/signin", signIn)
  *       '500':
  *         description: Internal server error
  */
-router.post("/select-role", selectRole)
+router.post("/select-role", selectRole);
 
 /**
  * @openapi
@@ -161,7 +180,7 @@ router.post("/select-role", selectRole)
  *       '500':
  *         description: Internal server error
  */
-router.post("/refresh_token", getAccessToken)
+router.post("/refresh_token", getAccessToken);
 
 /**
  * @openapi
@@ -188,7 +207,7 @@ router.post("/refresh_token", getAccessToken)
  *       '500':
  *         description: Internal server error
  */
-router.post("/forgot", forgotPassword)
+router.post("/forgot", forgotPassword);
 
 /**
  * @openapi
@@ -218,7 +237,7 @@ router.post("/forgot", forgotPassword)
  *       '500':
  *         description: Internal server error
  */
-router.post("/reset", auth, resetPassword)
+router.post("/reset", auth, resetPassword);
 
 /**
  * @openapi
@@ -235,7 +254,7 @@ router.post("/reset", auth, resetPassword)
  *       '500':
  *         description: Internal server error
  */
-router.get("/user_infor", auth, getUserInfor)
+router.get("/user_infor", auth, getUserInfor);
 
 /**
  * @openapi
@@ -259,7 +278,7 @@ router.get("/user_infor", auth, getUserInfor)
  *       '500':
  *         description: Internal server error
  */
-router.get("/users/:id", auth, getUserById)
+router.get("/users/:id", auth, getUserById);
 
 /**
  * @openapi
@@ -276,7 +295,7 @@ router.get("/users/:id", auth, getUserById)
  *       '500':
  *         description: Internal server error
  */
-router.get("/get_staffs", auth, getUserStaff)
+router.get("/get_staffs", auth, getUserStaff);
 
 /**
  * @openapi
@@ -293,7 +312,7 @@ router.get("/get_staffs", auth, getUserStaff)
  *       '500':
  *         description: Internal server error
  */
-router.get("/all_infor", auth, authAdminOrStaff, getAllUsersInfor)
+router.get("/all_infor", auth, authAdminOrStaff, getAllUsersInfor);
 
 /**
  * @openapi
@@ -310,7 +329,7 @@ router.get("/all_infor", auth, authAdminOrStaff, getAllUsersInfor)
  *       '500':
  *         description: Internal server error
  */
-router.get("/logout", logout)
+router.get("/logout", logout);
 
 /**
  * @openapi
@@ -370,7 +389,7 @@ router.get("/logout", logout)
  *       '500':
  *         description: Internal server error
  */
-router.patch("/update_user", auth, updateUser)
+router.patch("/update_user", auth, updateUser);
 
 /**
  * @openapi
@@ -395,7 +414,7 @@ router.patch("/update_user", auth, updateUser)
  *             properties:
  *               role:
  *                 type: array
- *                 items: 
+ *                 items:
  *                   type: integer
  *     responses:
  *       '200':
@@ -405,7 +424,7 @@ router.patch("/update_user", auth, updateUser)
  *       '500':
  *         description: Internal server error
  */
-router.patch("/update_role/:id", auth, authAdmin, updateUserRole)
+router.patch("/update_role/:id", auth, authAdmin, updateUserRole);
 
 /**
  * @openapi
@@ -441,7 +460,7 @@ router.patch("/update_role/:id", auth, authAdmin, updateUserRole)
  *       '500':
  *         description: Internal server error
  */
-router.patch("/update_user_status/:id", auth, authAdmin, updateUserStatus)
+router.patch("/update_user_status/:id", auth, authAdmin, updateUserStatus);
 
 // /**
 //  * @openapi
@@ -467,4 +486,4 @@ router.patch("/update_user_status/:id", auth, authAdmin, updateUserStatus)
 //  */
 // router.delete("/delete/:id", auth, authAdmin, deleteUser)
 
-export default router
+export default router;

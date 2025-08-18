@@ -1,12 +1,12 @@
 import swaggerJsDoc from "swagger-jsdoc";
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 
 import path from "path";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-dotenv.config()
+dotenv.config();
 
 /**
  * @swagger
@@ -37,7 +37,7 @@ dotenv.config()
  *           properties:
  *             binusian_id:
  *               type: string
- *               description: User's Binusian ID
+ *               description: User's Binusian ID or Personal ID Number
  *             name:
  *               type: string
  *               description: Full name of the user
@@ -45,22 +45,22 @@ dotenv.config()
  *               type: string
  *               format: email
  *               description: Email address of the user
- *             password: 
+ *             password:
  *               type: string
  *               description: Hashed password of the user
- *             program: 
+ *             program:
  *               type: string
- *               description: User's academic program
+ *               description: User's academic program or If the user is not a Binusian, then they do not need to fill in the program
  *             address:
  *               type: string
  *               description: User's address
- *             phone: 
+ *             phone:
  *               type: string
  *               description: User's phone number
  *             bio:
  *               type: string
  *               description: Short biography of the user
- *             role: 
+ *             role:
  *               type: array
  *               items:
  *                  type: integer
@@ -104,7 +104,7 @@ dotenv.config()
  *         _id:
  *           $oid: "uniqueKeyUser"
  *         personal_info:
- *           address: "Senayan Campus"
+ *           address: "FX Campus, Senayan, Jakarta"
  *           phone: "089123456789"
  *           bio: "Test my bio updated with hello world. This is awesome bio!"
  *           role: [0]
@@ -124,39 +124,40 @@ dotenv.config()
  *           website: https://johndoe.com
  *         joinedAt: "2024-08-07T07:20:10.250Z"
  *         updatedAt: "2024-09-10T16:27:44.578Z"
- *  
+ *
  */
 
 const swaggerSpec = swaggerJsDoc({
-    definition: {
-        openapi: "3.0.0",
-        info: {
-            title: "User Management API",
-            version: "1.0.0",
-            description: "API for managing users, including registration, login, and profile updates.",
-        },
-        servers: [
-            {
-                url: 'http://localhost:5000/api/user',
-                description: 'Development',
-            },
-            {
-                url: "https://csbi-users.csbihub.id/api/user",
-                description: 'Production'
-            }
-        ],
-        security: [
-            {
-                bearerAuth: []
-            }
-        ]
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "User Management API",
+      version: "1.0.0",
+      description:
+        "API for managing users, including registration, login, and profile updates. This API is only used for internal application of the Computer Science program, Binus University International.",
     },
-    apis: [
-        path.join(__dirname, '..', 'routes', '*.js'),
-        path.join(__dirname, '..', 'routes', '*.ts'),
-        path.join(__dirname, 'swagger.js'),
-        path.join(__dirname, 'swagger.ts'),
+    servers: [
+      {
+        url: "http://localhost:5000/api/user",
+        description: "Development",
+      },
+      {
+        url: "https://csbi-users.csbihub.id/api/user",
+        description: "Production",
+      },
     ],
+    security: [
+      {
+        bearerAuth: [],
+      },
+    ],
+  },
+  apis: [
+    path.join(__dirname, "..", "routes", "*.js"),
+    path.join(__dirname, "..", "routes", "*.ts"),
+    path.join(__dirname, "swagger.js"),
+    path.join(__dirname, "swagger.ts"),
+  ],
 });
 
 export default swaggerSpec;
