@@ -52,10 +52,16 @@ API for managing users including registration, login, profile updates, and role-
 ## 🏗️ System Architecture
 <img width="3840" height="2660" alt="user rest api flowchart _ Mermaid Chart-2025-08-20-121535" src="https://github.com/user-attachments/assets/b3eb4fb7-8694-489e-9311-fbbc31c6499b" />
 
-### Use Case Diagram
+### UML (Unified Modelling Language) Diagram
+- **Use Case Diagram**:
 ![primary-use-case](https://github.com/user-attachments/assets/9504ea0d-9e2c-4219-8b22-398223ba48f3)
 
-### Activity Diagram
+- **Class Diagram**:
+<img width="3689" height="3840" alt="class diagram - user rest api _ Mermaid Chart-2025-08-20-151030" src="https://github.com/user-attachments/assets/b01d25a7-e39d-4988-b7be-1216f170e1d4" />
+
+- **Activity and Sequence Diagram**: [Click here](https://github.com/Juwono136/REST_API_BUI_users_auth/tree/master/docs/use-case-model-images)
+- **Use Case Model Document Report**: [Click here](https://github.com/Juwono136/REST_API_BUI_users_auth/blob/master/docs/user-management-api_use-case-model-report.pdf)
+
 
 
 
