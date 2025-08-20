@@ -198,9 +198,7 @@ jobs:
 - Check the Actions tab in the GitHub repository to see the deployment process.
 
 ## 🌐 Swagger API Docs
-API Documentation is available at:
-- Development: http://localhost:5000/api/user/docs (for testing/development stage)
-- Production: https://csbi-users.csbihub.id/api/user/docs
+API Documentation is available at: https://csbi-users.csbihub.id/users/api-docs/
 
 ## 🔐 Security Best Practices
 - Strong password hashing with bcrypt
