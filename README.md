@@ -11,22 +11,29 @@ API for managing users including registration, login, profile updates, and role-
 ## Features
 - User registration & authentication
   - Passwords hashed with bcrypt
-  - JWT-based auth with Authorization header (Bearer scheme)
-- Role-based access with flexible role array (e.g., `0=user`, `1=admin`, `2=staff`)
-- Profile management: personal_info (binusian_id, name, email, password, address, phone, bio, role, avatar, status), and socialLinks.
-- Social links support (YouTube, Instagram, Facebook, Twitter, GitHub, Website)
-- Secure by default
-  - `helmet` for HTTP headers hardening
-  - `cors` with configurable origins
-  - `cookie-parser` for optional cookie usage
-  - Input sanitization with `dompurify` + `jsdom`
-- Email support via `nodemailer` (verification, notifications, etc.)
-- OpenAPI 3 documentation with `swagger-jsdoc` + `swagger-ui-express`
-- Developer friendly
-  - `.env` config via `dotenv`
-  - Hot reload with `nodemon`
+  - JWT-based authentication (Bearer tokens)
+- Role-based access with flexible role array:
+  - 0 = user
+  - 1 = admin
+  - 2 = staff
+  - etc...
+- Profile management
+  - Personal Info: binusian_id, name, email, password, address, phone, bio, role, avatar, status
+  - Social Links: YouTube, Instagram, Facebook, Twitter, GitHub, Website
+- Security
+  - helmet for HTTP headers
+  - cors with configurable origins
+  - cookie-parser for cookie usage
+  - Input sanitization via dompurify + jsdom
+- Email Support
+  - Verification & notification emails via nodemailer
+- API Documentation
+  - OpenAPI 3 with swagger-jsdoc + swagger-ui-express
+- Developer Friendly
+  - .env config via dotenv
+  - Hot reload with nodemon
   - Docker-ready
-  - CI/CD scaffold via GitHub Actions
+  - CI/CD via GitHub Actions
 
 ## Tech Stack
 - Runtime: Node.js
