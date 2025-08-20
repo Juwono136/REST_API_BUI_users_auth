@@ -54,7 +54,7 @@ API for managing users including registration, login, profile updates, and role-
 
 ### UML (Unified Modelling Language) Diagram
 - **Use Case Diagram**:
-![primary-use-case](https://github.com/user-attachments/assets/9504ea0d-9e2c-4219-8b22-398223ba48f3)
+![primary-use-case](https://github.com/user-attachments/assets/196c5457-6615-4c95-b15e-51a8705b63ab)
 
 - **Class Diagram**:
 <img width="3689" height="3840" alt="class diagram - user rest api _ Mermaid Chart-2025-08-20-151030" src="https://github.com/user-attachments/assets/b01d25a7-e39d-4988-b7be-1216f170e1d4" />
