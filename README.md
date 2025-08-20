@@ -212,14 +212,13 @@ API Documentation is available at:
 ## 📂 Project Structure
 <img width="252" height="761" alt="image" src="https://github.com/user-attachments/assets/afb9438a-fef5-4c82-8c43-cc9db6dfd961" />
 
+## 🚀 Future Improvements
+- Two-factor authentication (2FA)
+- Refresh token rotation & revocation
+- GraphQL support
+
 ## 🤝 Project Members
 - Juwono (https://github.com/Juwono136)
-
-
-
-
-
-
 
 
 
