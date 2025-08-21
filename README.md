@@ -224,7 +224,7 @@ This project his open to contributions! (especially for Binusian Students)
 
 Every little bit helps — thanks for supporting this project 💜
 
-## 🤝 Project Members
+## 🖖 Project Members
 - Juwono (https://github.com/Juwono136)
 - Ida Bagus Kerthyayana Manuaba (https://github.com/bagzcode)
 
