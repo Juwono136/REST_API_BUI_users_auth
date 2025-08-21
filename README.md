@@ -215,9 +215,18 @@ API Documentation is available at: https://csbi-users.csbihub.id/users/api-docs/
 - Refresh token rotation & revocation
 - GraphQL support
 
+## 🤝 Contributing
+This project his open to contributions! (especially for Binusian Students)  
+
+- Found a bug? [Open an issue](https://github.com/Juwono136/REST_API_BUI_users_auth/issues).  
+- Have an idea? [Suggest it here](https://github.com/Juwono136/REST_API_BUI_users_auth/issues).  
+- Want to help with code? See the [Contributing Guide](CONTRIBUTING.md).  
+
+Every little bit helps — thanks for supporting this project 💜
+
 ## 🤝 Project Members
 - Juwono (https://github.com/Juwono136)
-
+- Ida Bagus Kerthyayana Manuaba (https://github.com/bagzcode)
 
 
 
