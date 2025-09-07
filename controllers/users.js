@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { nanoid } from "nanoid";
 import User from "../models/user.js";
 import { userSendMail } from "./userSendMail.js";
 
@@ -183,7 +184,6 @@ export const signIn = async (req, res) => {
     const roles = user.personal_info.role;
 
     const refresh_token = createRefreshToken({ id: user._id });
-
     const expiry = 24 * 60 * 60 * 1000; // 1 day
 
     res.cookie("refreshtoken", refresh_token, {
@@ -209,6 +209,108 @@ export const signIn = async (req, res) => {
         id: user._id,
       });
     }
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+// add new user by Admin
+export const addUserByAdmin = async (req, res) => {
+  try {
+    const { binusian_id, name, email, program, address, phone, role, client_url } = req.body;
+
+    if (!binusian_id || !name || !email || !address || !phone || !role) {
+      return res.status(400).json({ message: "Please fill in all required fields" });
+    }
+
+    if (name.length < 3) {
+      return res.status(400).json({ message: "Name must be at least 3 letters long" });
+    }
+
+    if (!validateEmail(email)) {
+      return res.status(400).json({ message: "Invalid email format" });
+    }
+
+    if (!validatePhoneNumber(phone)) {
+      return res.status(400).json({
+        message: "Invalid phone number format. Only digits and symbols like + - ( ) are allowed.",
+      });
+    }
+
+    if (address.length < 6) {
+      return res
+        .status(400)
+        .json({ message: "Your address is too short (at least 6 letters long)." });
+    }
+
+    if (!Array.isArray(role) || role.length === 0) {
+      return res.status(400).json({ message: "Role must be a non-empty array." });
+    }
+
+    const isBinusEmail = validateBinusEmail(email);
+
+    if (isBinusEmail) {
+      // BINUS email must have both binusian_id and program
+      if (!binusian_id || !program || program.trim() === "") {
+        return res.status(400).json({
+          message: "Please fill in all fields",
+        });
+      }
+    } else {
+      // Non-BINUS email must have binusian_id (can be other ID), and must NOT fill in program
+      if (!binusian_id) {
+        return res.status(400).json({
+          message: "Please fill in all fields",
+        });
+      }
+
+      if (program && program.trim() !== "") {
+        return res.status(400).json({
+          message: "Invalid Credentials",
+        });
+      }
+    }
+
+    const user = await User.findOne({
+      $or: [{ "personal_info.email": email }, { "personal_info.binusian_id": binusian_id }],
+    });
+
+    if (user) {
+      return res.status(400).json({ message: "This account already exists." });
+    }
+
+    const randomPassword = nanoid(16);
+    const passwordHash = await bcrypt.hash(randomPassword, 12);
+
+    const newUser = new User({
+      personal_info: {
+        binusian_id,
+        name,
+        email,
+        address,
+        phone,
+        program: program || null,
+        password: passwordHash,
+        role,
+        status: "active",
+      },
+    });
+
+    await newUser.save();
+
+    const access_token = createAccessToken({ id: newUser._id });
+    const url = `${client_url || DEFAULT_CLIENT_URL}/user/reset/${access_token}`;
+
+    userSendMail(
+      email,
+      url,
+      "Admin of InventorCS has created an account for you",
+      "Register my account"
+    );
+
+    res.json({
+      message: `A new user with name '${name}' created successfully. An email registration has been sent to the user.`,
+    });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }
@@ -354,7 +456,7 @@ export const getUserStaff = async (req, res) => {
 export const getAllUsersInfor = async (req, res) => {
   try {
     const page = parseInt(req.query.page) - 1 || 0;
-    const limit = parseInt(req.query.limit) || 10;
+    const limit = parseInt(req.query.limit) || 20;
     const search = req.query.search || "";
     let sort = req.query.sort || "personal_info.name";
     let program = req.query.program || "All";
@@ -522,11 +624,20 @@ export const updateUser = async (req, res) => {
 // update user role
 export const updateUserRole = async (req, res) => {
   try {
-    const { role } = req.body; // role is expected as an array
-    const validRoles = [0, 1, 2]; // 0 = user, 1 = admin, 2 = staff
+    const { role } = req.body;
+    const { id } = req.params;
 
-    // Validate user role
-    if (!Array.isArray(role) || role.some((r) => !validRoles.includes(r))) {
+    // input role validation
+    if (!Array.isArray(role)) {
+      return res.status(400).json({ message: "Role must be an array" });
+    }
+
+    const validRoles = [0, 1, 2];
+    if (role.some((r) => !validRoles.includes(r))) {
+      return res.status(400).json({ message: "Invalid user role found in the array" });
+    }
+
+    if (role.length < 1) {
       return res.status(400).json({ message: "Invalid user role" });
     }
 
@@ -534,40 +645,21 @@ export const updateUserRole = async (req, res) => {
       return res.status(400).json({ message: "User can only have a maximum of 3 roles" });
     }
 
-    // Find the user by ID
-    const user = await User.findById(req.params.id);
+    // search and update the user
+    const user = await User.findById(id);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Get current roles from the user
-    let currentRoles = user.personal_info.role;
+    // replace the old role array with the new one
+    user.personal_info.role = Array.from(new Set(role));
 
-    // Combine current and new roles, then remove duplicates
-    let updatedRoles = [...role];
-
-    // Remove duplicates (e.g. [1, 0, 0] becomes [1, 0])
-    updatedRoles = Array.from(new Set(updatedRoles));
-
-    // Handle if the updated role contains duplicates like [0,0] or [1,1,1]
-    if (updatedRoles.length === 1 && role.every((r) => r === updatedRoles[0])) {
-      // If all roles in request are the same, return a single element (e.g. [0,0,0] becomes [0])
-      updatedRoles = [updatedRoles[0]];
-    }
-
-    // If the updated roles have fewer items than current roles, replace only the provided indexes
-    for (let i = 0; i < role.length; i++) {
-      currentRoles[i] = role[i];
-    }
-
-    // Remove duplicates in the final currentRoles if necessary
-    currentRoles = Array.from(new Set(currentRoles));
-
-    // Save back to database
-    user.personal_info.role = currentRoles;
     const updatedUser = await user.save();
 
-    res.json({ message: "Update user role success", role: updatedUser.personal_info.role });
+    res.json({
+      message: "User roles updated",
+      role: updatedUser.personal_info.role,
+    });
   } catch (error) {
     return res.status(500).json({ message: error.message });
   }

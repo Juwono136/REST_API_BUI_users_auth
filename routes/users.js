@@ -1,6 +1,7 @@
 import express from "express";
 import {
   activateEmail,
+  addUserByAdmin,
   forgotPassword,
   getAccessToken,
   getAllUsersInfor,
@@ -238,6 +239,53 @@ router.post("/forgot", forgotPassword);
  *         description: Internal server error
  */
 router.post("/reset", auth, resetPassword);
+
+/**
+ * @openapi
+ * /add_user_by_admin:
+ *   post:
+ *     tags:
+ *       - Users
+ *     summary: Add new user by admin (need auth)
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               binusian_id:
+ *                 type: string
+ *                 example: "123456"
+ *               name:
+ *                 type: string
+ *                 example: "John Doe"
+ *               email:
+ *                 type: string
+ *                 example: "john.doe@example.com"
+ *               address:
+ *                 type: string
+ *                 example: "FX Campus, Senayan, Jakarta"
+ *               phone:
+ *                 type: string
+ *                 example: "+62896322873830"
+ *               program:
+ *                 type: string
+ *                 example: "Computer Science"
+ *               role:
+ *                 type: array
+ *                 example: [0, 2]
+ *     responses:
+ *       '200':
+ *         description: New User successful added by Admin
+ *       '403':
+ *         description: Requested resource is forbidden
+ *       '400':
+ *         description: Bad request
+ *       '500':
+ *         description: Internal server error
+ */
+router.post("/add_user_by_admin", auth, authAdmin, addUserByAdmin);
 
 /**
  * @openapi
